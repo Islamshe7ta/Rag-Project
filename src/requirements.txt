@@ -8,3 +8,5 @@ aiofiles==25.1.0
 langchain==1.4.2
 langchain-community
 pymupdf==1.28.2
+
+pymongo==4.18.1
