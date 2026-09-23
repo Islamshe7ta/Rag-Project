@@ -5,10 +5,13 @@ services:
     ports:
       - "27007:27017"
     volumes:
-      - ./mongodb:/data/db
+      - mongo_data:/data/db
     networks:
       - backend
     restart: always
 
 networks:
   backend:
+
+volumes:
+  mongo_data:

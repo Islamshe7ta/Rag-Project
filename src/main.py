@@ -10,7 +10,7 @@ async def startup_db_client():
     settings = get_settings()
     app.state.settings = settings
     app.state.mongo_conn = AsyncMongoClient(settings.MONGO_URL)
-    app.state.mongo_db = app.state.mongo_conn[settings.MONGO_DATABASE]
+    app.db_client = app.state.mongo_conn[settings.MONGO_DATABASE]
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
