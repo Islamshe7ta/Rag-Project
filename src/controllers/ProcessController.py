@@ -18,11 +18,9 @@ class ProcessController(BaseController):
     def get_file_loader(self, file_id: str):
       file_extension = self.get_file_extension(file_id=file_id)
       file_path = os.path.join(self.project_path, file_id)
-      print("FILE ID:", file_id)
-      print("FILE EXTENSION:", file_extension)
-      print("FILE PATH:", file_path)
-      print("TXT VALUE:", ProcessingEnum.TXT.value)
-      print("PDF VALUE:", ProcessingEnum.PDF.value)
+
+      if not os.path.exists(file_path):
+          raise FileNotFoundError(f"File not found: {file_path}")
 
       if file_extension == ProcessingEnum.TXT.value:
           return TextLoader(file_path, encoding="utf-8")
@@ -34,7 +32,9 @@ class ProcessController(BaseController):
         
     def get_file_content(self, file_id: str):
         file_loader = self.get_file_loader(file_id=file_id)
-        return file_loader.load()
+        if file_loader:
+            return file_loader.load()
+        return None
     
     def process_file_content(self,file_content: list, file_id: str, chunk_size: int=1000, overlap_size: int=20):
         text_splitter = RecursiveCharacterTextSplitter(chunk_size=chunk_size
