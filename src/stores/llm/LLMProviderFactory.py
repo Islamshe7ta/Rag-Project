@@ -1,14 +1,11 @@
-from src.helpers.config import get_settings
-from src.stores.llm.providers.OpenAiProviders import OpenAiProviders
-from src.stores.llm.providers.CohereProvider import CohereProvider
-from src.stores.LLMEnums import LLMEnums
-
-
+from .providers.OpenAiProviders import OpenAiProviders
+from .providers.CohereProvider import CohereProvider
+from .LLMEnums import LLMEnums
 
 
 class LLMProviderFactory:
     
-    def __init__(self,config=dict):
+    def __init__(self, config=dict):
         self.config = config
         
     def create(self, provider: str):
@@ -29,7 +26,7 @@ class LLMProviderFactory:
                 default_embedding_size=self.config.EMBEDDING_SIZE_ID
             )
         else:
-            raise ValueError(f"Provider type {provider_type} is not supported")
+            raise ValueError(f"Provider type {provider} is not supported")
     
     
     

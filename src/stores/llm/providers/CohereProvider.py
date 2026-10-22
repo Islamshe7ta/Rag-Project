@@ -16,9 +16,9 @@ class CohereProvider(LLMInterface):
         self.default_input_max_charachters = default_input_max_charachters
         self.default_output_max_charachters = default_output_max_charachters
         self.default_generation_temperature = default_generation_temperature  
-        self.default_embedding_size = default_embedding_size
-        self.generation_model_id = generation_model_id
-        self.embedding_model_id = embedding_model_id
+        self.generation_model_id = None
+        self.embedding_model_id = None
+        self.embedding_size = default_embedding_size
         self.logger = logging.getLogger(__name__)
         
         self.client = cohere.Client(
@@ -64,7 +64,7 @@ class CohereProvider(LLMInterface):
                 
             return response.text
     
-    def embed_text(self,text:str) :
+    def embed_text(self, text: str, document_type: str = None):
 
         if not self.client:
             self.logger.error("Cohere client is not set")
@@ -74,11 +74,11 @@ class CohereProvider(LLMInterface):
             self.logger.error("Cohere embedding model id is not set")
             return None
         
-        input_type=CohereEnums.DOCUMENT.value 
-        if DocumentType.DOCUMENT.value :
-            input_type=CohereEnums.DOCUMENT.value 
-        elif DocumentType.QUERY.value:
-            input_type=CohereEnums.QUERY.value
+        input_type = CohereEnums.DOCUMENT.value 
+        if document_type == DocumentType.DOCUMENT.value:
+            input_type = CohereEnums.DOCUMENT.value 
+        elif document_type == DocumentType.QUERY.value:
+            input_type = CohereEnums.QUERY.value
 
         response = self.client.embed(
             model=self.embedding_model_id,

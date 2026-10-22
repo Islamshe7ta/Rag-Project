@@ -11,7 +11,8 @@ class ResponseSignal(Enum):
     FILE_PROCESSING_SUCCESS = "File processing successful"
     FILE_NOT_FOUND = "File not found"
     FILE_ID_NOT_FOUND = "No File has this File id"
+    PROJECT_NOT_FOUND = "Project not found"
+    PROJECT_ID_NOT_FOUND = "No Project has this Project id"
+    INSERT_INTO_VECTOR_DB_SUCCESSFULL = "Index pushed successfully"
+    INSERT_INTO_VECTOR_DB_FAILED = "Index push failed"    
     
-    
-
-
