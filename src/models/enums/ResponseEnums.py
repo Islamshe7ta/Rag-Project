@@ -15,4 +15,7 @@ class ResponseSignal(Enum):
     PROJECT_ID_NOT_FOUND = "No Project has this Project id"
     INSERT_INTO_VECTOR_DB_SUCCESSFULL = "Index pushed successfully"
     INSERT_INTO_VECTOR_DB_FAILED = "Index push failed"    
-    
+    GET_PROJECT_INDEX_INFO_SUCCESSFULL = "Project index info retrieved successfully"
+    GET_PROJECT_INDEX_INFO_FAILED = "Project index info retrieval failed"    
+    SEARCH_VECTOR_DB_COLLECTION_SUCCESSFULL = "Search results retrieved successfully"
+    SEARCH_VECTOR_DB_COLLECTION_FAILED = "Search results retrieval failed"   

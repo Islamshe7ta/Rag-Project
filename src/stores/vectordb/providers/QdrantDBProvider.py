@@ -44,6 +44,8 @@ class QdrantDBProvider(VectorDbInterface):
         return self.client.get_collections()
     
     def get_collection_info(self, collection_name: str) -> dict:
+        if not self.is_collection_exists(collection_name=collection_name):
+            return None
         return self.client.get_collection(collection_name=collection_name)
 
     def delete_collection(self, collection_name: str) -> bool:
@@ -78,9 +80,9 @@ class QdrantDBProvider(VectorDbInterface):
             return False
         self.logger.info(f"Inserting one document into collection {collection_name}")
         point_id = self._get_valid_id(record_id)
-        _ = self.client.upload_records(
+        _ = self.client.upload_points(
             collection_name=collection_name,
-            records=[models.Record(
+            points=[models.PointStruct(
                 id=point_id,
                 vector=vector,
                 payload={
@@ -110,8 +112,8 @@ class QdrantDBProvider(VectorDbInterface):
             batch_vectors = vectors[i:batch_end]
             batch_metadata = metadata[i:batch_end]
             batch_ids = record_ids[i:batch_end]
-            batch_records = [
-                models.Record(
+            batch_points = [
+                models.PointStruct(
                     id=self._get_valid_id(batch_ids[x], fallback=i + x),
                     vector=batch_vectors[x],
                     payload={
@@ -121,9 +123,9 @@ class QdrantDBProvider(VectorDbInterface):
                 ) for x in range(len(batch_texts))
             ]
             try:
-                _ = self.client.upload_records(
+                _ = self.client.upload_points(
                     collection_name=collection_name,
-                    records=batch_records
+                    points=batch_points
                 )
             except Exception as e:
                 self.logger.error(f"Error inserting batch: {e}")
@@ -134,9 +136,12 @@ class QdrantDBProvider(VectorDbInterface):
                             vector:list,
                             limit:int=5,
                            ):
-        return self.client.search(collection_name=collection_name,
-                                    query_vector=vector,
-                                    limit=limit)
+        response = self.client.query_points(
+            collection_name=collection_name,
+            query=vector,
+            limit=limit
+        )
+        return response.points
     
        
         
