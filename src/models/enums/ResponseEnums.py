@@ -19,3 +19,5 @@ class ResponseSignal(Enum):
     GET_PROJECT_INDEX_INFO_FAILED = "Project index info retrieval failed"    
     SEARCH_VECTOR_DB_COLLECTION_SUCCESSFULL = "Search results retrieved successfully"
     SEARCH_VECTOR_DB_COLLECTION_FAILED = "Search results retrieval failed"   
+    RAG_ANSWER_ERROR = "Error generating RAG answer"
+    RAG_ANSWER_SUCCESSFULL = "RAG answer generated successfully"

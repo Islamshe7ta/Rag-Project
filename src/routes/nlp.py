@@ -142,7 +142,8 @@ async def search_index(request:Request,project_id:str,search_request:SearchReque
     nlp_controller = NLPController(
         embedding_client=request.app.state.embedding_client,
         vectordb_client=request.app.state.vectordb_client,
-        generation_client=request.app.state.generation_client
+        generation_client=request.app.state.generation_client,
+        template_parser=request.app.state.template_parser
     )
     results = nlp_controller.search_vector_db_collection(
         project=project,
@@ -159,7 +160,50 @@ async def search_index(request:Request,project_id:str,search_request:SearchReque
         status_code=status.HTTP_200_OK,
         content={
             "signal": ResponseSignal.SEARCH_VECTOR_DB_COLLECTION_SUCCESSFULL.value,
-            "results": results
+            "results": [result.__dict__ for result in results]
+        }
+    )
+    
+@nlp_router.post("/index/answer/{project_id}")
+async def search_index(request:Request,project_id:str,search_request:SearchRequest):
+    project_model = await ProjectModel.create_instance(
+        db_client=request.app.state.db_client
+    )
+    chunk_model = await ChunkModel.create_instance(
+        db_client=request.app.state.db_client
+    )
+    project = await project_model.get_project_or_create_one(
+        project_id=project_id
+    )
+    
+    if not project:
+        return JSONResponse(
+            status_code=status.HTTP_404_NOT_FOUND,
+            content={"message":ResponseSignal.PROJECT_NOT_FOUND.value}
+        )
+    nlp_controller = NLPController(
+        embedding_client=request.app.state.embedding_client,
+        vectordb_client=request.app.state.vectordb_client,
+        generation_client=request.app.state.generation_client,
+        template_parser=request.app.state.template_parser
+    )
+    answer , full_prompt,chat_history = nlp_controller.answer_rag_question(
+        project=project,
+        query=search_request.text,
+        limit=search_request.limit
+    )
+    if not answer:
+        return JSONResponse(
+            status_code=status.HTTP_404_NOT_FOUND,
+            content={"message":ResponseSignal.RAG_ANSWER_ERROR.value}
+        )
+    return JSONResponse(
+        status_code=status.HTTP_200_OK,
+        content={
+            "signal": ResponseSignal.RAG_ANSWER_SUCCESSFULL.value,
+            "answer": answer,
+            "full_prompt": full_prompt,
+            "chat_history": chat_history
         }
     )
     

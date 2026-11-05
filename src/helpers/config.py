@@ -32,8 +32,12 @@ class Settings(BaseSettings):
     VECTOR_DB_PATH: str
     VECTOR_DB_DISTANCE_METHODS: str
 
+    PRIMARY_LANG: str = "en"
+    DEFAULT_LANG: str = "en"
+
     class Config:
         env_file = ".env"
+        extra = "ignore"
      
 def get_settings() -> Settings:
     return Settings()

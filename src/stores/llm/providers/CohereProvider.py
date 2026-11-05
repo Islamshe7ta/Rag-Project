@@ -19,6 +19,7 @@ class CohereProvider(LLMInterface):
         self.generation_model_id = None
         self.embedding_model_id = None
         self.embedding_size = default_embedding_size
+        self.enums = CohereEnums
         self.logger = logging.getLogger(__name__)
         
         self.client = cohere.Client(
@@ -100,5 +101,5 @@ class CohereProvider(LLMInterface):
     def construct_prompt(self,prompt:str, role :str) :
         return {
             "role":role,
-            "text":self.process_text(prompt)
+            "message":self.process_text(prompt)
         }
